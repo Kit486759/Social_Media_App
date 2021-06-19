@@ -7,26 +7,43 @@ const reducer = (state, action) => {
         case 'ADD_POST':
             return [...state, action.payload]
         case 'ADD_COMMENT':
-            // return state.map((info)=>{{info === action.payload.id && console.log(info) } })
-            // return state.map((info)=>{{info.id === action.payload.id && {...info, cm : action.payload} }})
-            // return [...state, action.payload]
+            return state.map((info) => {
+                return info.id === action.payload.id ?
+                    {
+                        ...info,
+                        cm: [{ user: action.payload.user, comment: action.payload.comment, uid: action.payload.uid }, ...info.cm]
+                    } : info
+            })
+
+        case 'LIKED':
+            return state.map((info) => {
+                return info.id === action.payload ?
+                    {
+                        ...info,
+                        likes: info.likes + 1
+                    } : info
+            })
+
+        case 'UNLIKED':
+            return state.map((info) => {
+                return info.id === action.payload ?
+                    {
+                        ...info,
+                        likes: info.likes - 1
+                    } : info
+            })
+
         default:
             return action.payload
+                .map((info) => ({
+                    ...info, cm: [{
+                        user: null,
+                        comment: null,
+                        uid: null
+                    }]
+                }))
     }
 }
-
-const commentReducer = (state, action) => {
-    switch (action.type) {
-        case 'ADD_COMMENT':
-            return [...state, action.payload]
-        // case 'COMBINE_CAPTION':
-        //     return Object.assign({}, ...state, action.payload)
-        //     return state.map((img) => ({ ...img, text: action.payload }))
-        default:
-            return action.payload
-    }
-}
-
 
 
 export const Context = createContext()
@@ -35,8 +52,9 @@ export default function ContextApi({ children }) {
 
 
     const [data, dispatch] = useReducer(reducer, [])
-    const [comments, commentDispatch] = useReducer(commentReducer, [])
-
+    // const [comments, commentDispatch] = useReducer(commentReducer, [])
+    const BASE_URL = 'https://dummyapi.io/data/api';
+    const APP_ID = '60cd05fef94203502e75f55f';
 
 
     const fetch = async () => {
@@ -44,9 +62,11 @@ export default function ContextApi({ children }) {
         try {
             const img = await axios.get("https://fakestoreapi.com/products/")
             // const text = await axios.get("https://jsonplaceholder.typicode.com/posts")
-            console.log(img.data)
+            const post = await axios.get(`${BASE_URL}/post`, { headers: { 'app-id': APP_ID } })
 
-            dispatch({ type: 'default', payload: img.data })
+            console.log(post.data.data)
+
+            dispatch({ type: 'default', payload: post.data.data })
 
             // dispatch({ type: 'COMBINE_CAPTION', payload: text.data })
         }
@@ -61,12 +81,12 @@ export default function ContextApi({ children }) {
 
 
     console.log(data)
-    console.log(comments)
+    // console.log(comments)
     return (
         <>
             {/* {data.length !== 0 && ( */}
 
-            <Context.Provider value={{ data, dispatch,comments,commentDispatch }}>
+            <Context.Provider value={{ data, dispatch }}>
                 {children}
             </Context.Provider>
 
