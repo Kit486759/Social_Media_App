@@ -7,7 +7,6 @@ const reducer = (state, action) => {
         case 'ADD_POST':
             return [...state, action.payload]
         case 'ADD_COMMENT':
-            // return state.map((info)=>{{info === action.payload.id && console.log(info) } })
             return state.map((info) => {
                 return info.id === action.payload.id ?
                     {
@@ -16,31 +15,33 @@ const reducer = (state, action) => {
                     } : info
             })
 
-        // case 'DEL_COMMENT':
-        //     return state.map((info) => {
-        //         return info.id === action.payload.id ?
-        //             {
-        //                 ...info,
-        //                 cm: [ info.cm.filter((comment)=>comment.id !== action.payload)]
-        //             } : info
-        //     })
-
-        case 'DEL_COMMENT':
+        case 'LIKED':
             return state.map((info) => {
-                return info.id === action.payload.id && {
-                    cm: [info.cm.filter((comment) => comment.id !== action.payload.uid), ...info.cm]
-                 }
-    })
+                return info.id === action.payload ?
+                    {
+                        ...info,
+                        likes: info.likes + 1
+                    } : info
+            })
+
+        case 'UNLIKED':
+            return state.map((info) => {
+                return info.id === action.payload ?
+                    {
+                        ...info,
+                        likes: info.likes - 1
+                    } : info
+            })
 
         default:
-return action.payload
-    .map((info) => ({
-        ...info, cm: [{
-            user: null,
-            comment: null,
-            uid: null
-        }]
-    }))
+            return action.payload
+                .map((info) => ({
+                    ...info, cm: [{
+                        user: null,
+                        comment: null,
+                        uid: null
+                    }]
+                }))
     }
 }
 
