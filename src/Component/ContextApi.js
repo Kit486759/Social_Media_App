@@ -4,10 +4,13 @@ import axios from 'axios';
 
 const reducer = (state, action) => {
     switch (action.type) {
+
         case 'ADD_POST':
             return [...state, action.payload]
+
         case 'ADD_COMMENT':
             return state.map((info) => {
+                // validation check by post id, the change will only apply in that post
                 return info.id === action.payload.id ?
                     {
                         ...info,
@@ -33,29 +36,70 @@ const reducer = (state, action) => {
                     } : info
             })
 
+        case 'SHOWMORE':
+            return state.map((info) => {
+                return info.id === action.payload ?
+                    {
+                        ...info,
+
+                        // Set show items = comments length
+                        itemsToShow: info.cm.length,
+                        expanded: true
+                    } : info
+            })
+
+        case 'SHOWLESS':
+            return state.map((info) => {
+                return info.id === action.payload ?
+                    {
+                        ...info,
+
+                        // Set show items = comments length
+                        itemsToShow: 2,
+                        expanded: false
+                    } : info
+            })
+
+
         default:
             return action.payload
                 .map((info) => ({
-                    ...info, cm: [{
-                        user: null,
-                        comment: null,
-                        uid: null
-                    }]
+                    ...info, cm: [
+                        {
+                            user: "kit",
+                            comment: "Cute dog"
+                        },
+                        {
+                            user: "kit",
+                            comment: "Cute dog"
+                        },
+                        {
+                            user: "kit",
+                            comment: "Cute dog"
+                        },
+                        {
+                            user: "kit",
+                            comment: "Cute dog"
+                        },
+                        {
+                            user: "kit",
+                            comment: "Cute dog"
+                        }
+                    ],
+
+                    itemsToShow: 2,
+                    expanded: false
                 }))
     }
 }
-
 
 export const Context = createContext()
 
 export default function ContextApi({ children }) {
 
-
     const [data, dispatch] = useReducer(reducer, [])
-    // const [comments, commentDispatch] = useReducer(commentReducer, [])
     const BASE_URL = 'https://dummyapi.io/data/api';
     const APP_ID = '60cd05fef94203502e75f55f';
-
 
     const fetch = async () => {
 
@@ -73,23 +117,17 @@ export default function ContextApi({ children }) {
         catch (err) { console.log(`There is an error${err}`) }
     }
 
-
     useEffect(() => {
         fetch()
-
     }, [])
 
-
-    console.log(data)
+    // console.log(data)
     // console.log(comments)
     return (
         <>
-            {/* {data.length !== 0 && ( */}
-
             <Context.Provider value={{ data, dispatch }}>
                 {children}
             </Context.Provider>
-
         </>
     )
 }
