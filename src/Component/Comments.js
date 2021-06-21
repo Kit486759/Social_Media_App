@@ -19,8 +19,9 @@ export default function Comments(props) {
     return (
         <>
             {/* Receive the itemToShow number from data and slice the array to control the how many comments to display */}
+            {/* Default value will be 3 and show 3 comments and after click show more, the value will be the comments.length to show all comments */}
             {data.cm.slice(0, data.itemsToShow).map((comment, index) => {
-                return <div className="my-2 text-sm text"
+                return <div className="mb-1 ml-1 text-sm text"
                     key={index}>
                     <span className="break-words font-bold mr-2" >{comment.user}</span>
                     <span className="break-words">{comment.comment}</span>
@@ -29,7 +30,7 @@ export default function Comments(props) {
             }
 
             {/* Receive the expanded status from data to display Show More or Show Less button */}
-            <p className="cursor-pointer underline"
+            <p className="cursor-pointer underline text-sm mb-2 ml-1 text-gray-400 font-medium"
                 onClick={() => showMore(data.id)}>{data.expanded === false ? "Show More" : "Show Less"}</p>
         </>
     )

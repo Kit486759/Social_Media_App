@@ -1,41 +1,66 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Context } from './ContextApi'
 import { v4 as uuidv4 } from 'uuid';
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaBox } from "react-icons/fa";
 import Comments from './Comments';
 
 export default function Feed() {
 
     const { data, dispatch } = useContext(Context)
     const [input, setInput] = useState({})
-    const [like, setLike] = useState(false)
+    // const [like, setLike] = useState(false)
+
 
     // Submit comment , sent value back to Context
     const submit = (e) => {
+
+        // Target input boxes
         const userInput = e.target.getElementsByClassName("inputUser")[0]
         const cmInput = e.target.getElementsByClassName("cmInput")[0]
+
         // console.log(userInput)
         e.preventDefault()
         if (input.user === "" || input.comment === "") {
             return alert("Please input all information ")
         }
+        // Pass payload which is the object with user and comment value by dispatch "ADD_COMMENT"
         dispatch({ type: "ADD_COMMENT", payload: input })
 
-        // Clear user & comment input box after submition
+        // Call the input boxes and clear user & comment after submition
         userInput.value = ""
         cmInput.value = ""
 
+        localStorage.setItem("data", JSON.stringify(data))
     }
 
-    // Function for like button
-    const likeOnClick = (postId) => {
 
-        setLike(!like)
-        if (like === false)
-            dispatch({ type: "LIKED", payload: postId })
-        if (like === true)
-            dispatch({ type: "UNLIKED", payload: postId })
+    // Function for like and unlike
+    const likeOnClick = (post) => {
+
+        // Switch to like or unlike 
+        // setLike(!like)
+
+        // if like is false which mean you are going to like and call the dispatch to add 1 like from object value
+        if (post.liked === false)
+            dispatch({ type: "LIKE", payload: post.id })
+
+        // if like is true which mean you are going to unlike and call the dispatch to minus 1 like from object value
+        if (post.liked === true)
+            dispatch({ type: "UNLIKE", payload: post.id })
+
+        localStorage.setItem("data", JSON.stringify(data))
+
     }
+
+
+    useEffect(() => {
+
+        if (localStorage.hasOwnProperty("data") && data.length !== 0) {
+
+            localStorage.setItem("data", JSON.stringify(data))
+        }
+
+    }, [data])
 
 
     return (
@@ -50,19 +75,20 @@ export default function Feed() {
                         <img className=" w-500 h-80 object-cover select-none"
                             src={data.image} alt="image" />
                         <div className="my-2">
-                            {like === false ?
+                            {data.liked === false ?
                                 <FaRegHeart className="inline" size={20} style={{ cursor: "pointer", borderColor: "white" }}
-                                    onClick={() => likeOnClick(data.id)} />
-                                :
+                                    onClick={() => likeOnClick(data)} />
+                            :
+                            
                                 <FaHeart className="inline" size={20} style={{ cursor: "pointer", color: "af0d0d" }}
-                                    onClick={() => likeOnClick(data.id)} />
+                                    onClick={() => likeOnClick(data)} />
                             }
                             <span className="text-sm ml-2 mb-2 align-bottom select-none">{data.likes} Likes </span>
                         </div>
 
                         <span className="font-black mr-2 text-base mt-5">{data.owner.firstName}</span>
                         <span className="text-sm break-words">{data.text}</span>
-                        <div>
+                        <div className="mb-2">
                             {data.tags.map((tag, index) => {
                                 return <span className="text-sm mr-2 underline text-blue-900 cursor-pointer"
                                     key={index}>#{tag}
