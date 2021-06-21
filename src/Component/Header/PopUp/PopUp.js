@@ -1,8 +1,8 @@
-import { useState } from 'react';
-
+import React, { useState, useContext, useEffect } from 'react';
 import './PopUp.css';
 import { CgProfile } from 'react-icons/cg';
 import { BiImageAdd } from 'react-icons/bi';
+import { Context } from '../../ContextApi';
 
 const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -15,6 +15,8 @@ const getBase64 = (file) => {
 
 
 const PopUp = props => {
+
+    const { data, dispatch } = useContext(Context)
     const [img, setImg] = useState([localStorage.getItem('image')]);
     const [enteredTitle, setEnteredTitle] = useState('');
 
@@ -40,7 +42,7 @@ const PopUp = props => {
 
     const onSubmit = e => {
         e.preventDefault();
-        
+
         //send enteredTitle
         if (enteredTitle.trim().length === 0 || img.length === 0) {
             alert('You must enter a title for your foto!');
@@ -49,7 +51,24 @@ const PopUp = props => {
             console.log('YOU SUBMITED THIS: ', enteredTitle);
             closeBtn();
         }
+
+        console.log(img)
+        if (img) {
+            dispatch({ type: "ADD_POST", payload: { title: enteredTitle, url: img } })
+
+        }
+
+        localStorage.setItem("data", JSON.stringify(data))
     }
+
+    useEffect(() => {
+
+        if (localStorage.hasOwnProperty("data") && data.length !== 0) {
+
+            localStorage.setItem("data", JSON.stringify(data))
+        }
+
+    }, [data])
 
     return (
         <>
