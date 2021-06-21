@@ -6,13 +6,22 @@ const reducer = (state, action) => {
     switch (action.type) {
 
         case 'ADD_POST':
-            return [...state, action.payload]
+            return [
+                {
+                    image: action.payload.url,
+                    owner: { firstName: "Daniel" },
+                    liked : false,
+                    likes : 0,
+                    text : action.payload.title,
+                    tags:["First post"]
+                }
+                , ...state]
 
         case 'ADD_COMMENT':
             return state.map((info) => {
                 // validation check by post id, the change will only apply in that post
                 return info.id === action.payload.id ?
-
+                    // Add cm as array for comments
                     info.cm ?
                         {
                             ...info,
@@ -25,10 +34,6 @@ const reducer = (state, action) => {
                             cm: [{ user: action.payload.user, comment: action.payload.comment, uid: action.payload.uid }]
                         }
                     : info
-
-
-                // Add the comment as object to the array key "cm"
-
             })
 
         case 'LIKE':
