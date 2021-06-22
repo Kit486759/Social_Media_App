@@ -1,21 +1,9 @@
-import React, { useEffect, createContext, useReducer, useState } from 'react';
+import React, { useEffect, createContext, useReducer } from 'react';
 import axios from 'axios';
 
 
 const reducer = (state, action) => {
     switch (action.type) {
-
-        case 'ADD_POST':
-            return [
-                {
-                    image: action.payload.url,
-                    owner: { firstName: "Daniel" },
-                    liked : false,
-                    likes : 0,
-                    text : action.payload.title,
-                    tags:["First post"]
-                }
-                , ...state]
 
         case 'ADD_COMMENT':
             return state.map((info) => {
@@ -65,7 +53,7 @@ const reducer = (state, action) => {
                         ...info,
                         // Set show items = comments length
                         itemsToShow: info.cm.length,
-                        // Set expanded status is true to decide display Show More or Show Less
+                        // Set expanded status to decide display Show More or Show Less
                         expanded: true
                     } : info
             })
@@ -82,6 +70,19 @@ const reducer = (state, action) => {
                         expanded: false
                     } : info
             })
+
+        // Add post
+        case 'ADD_POST':
+            return [
+                {
+                    image: action.payload.url,
+                    owner: { firstName: "Daniel" },
+                    liked: false,
+                    likes: 0,
+                    text: action.payload.title,
+                    tags: ["First post"]
+                }
+                , ...state]
 
         // Load local storage
         case 'LOCAL_STORAGE':
@@ -124,12 +125,12 @@ export default function ContextApi({ children }) {
 
     const [data, dispatch] = useReducer(reducer, [])
     const BASE_URL = 'https://dummyapi.io/data/api';
-    const APP_ID = '60cd05fef94203502e75f55f';
+    const APP_ID = process.env.REACT_APP_API_KEY;
 
     const fetch = async () => {
 
         try {
-            const img = await axios.get("https://fakestoreapi.com/products/")
+            // const img = await axios.get("https://fakestoreapi.com/products/")
             // const text = await axios.get("https://jsonplaceholder.typicode.com/posts")
             const post = await axios.get(`${BASE_URL}/post`, { headers: { 'app-id': APP_ID } })
 
