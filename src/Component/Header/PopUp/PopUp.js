@@ -70,6 +70,8 @@ const PopUp = props => {
 
     }, [data])
 
+   
+
     return (
         <>
             <div className='popUp-wrap'>

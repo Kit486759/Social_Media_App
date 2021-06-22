@@ -72,7 +72,7 @@ export default function Feed() {
                         <div className="mt-1 mb-2 h-1/6 bg-blue-50">
                             <p className="font-bold text-base">{data.owner.firstName}</p>
                         </div>
-                        <img className=" w-500 h-80 object-cover select-none"
+                        <img className=" w-500 h-80 object-cover object-center select-none"
                             src={data.image} alt="image" />
                         <div className="my-2">
                             {data.liked === false ?
