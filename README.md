@@ -3,7 +3,7 @@
 <br/>
 
 <p align="center">
-  <img src="%PUBLIC_URL%/demo.gif" alt="demoGif" /><br>
+  <img src="/demo.gif" alt="demoGif" /><br>
 </p>
 
 # Author
