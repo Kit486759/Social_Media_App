@@ -76,11 +76,11 @@ const reducer = (state, action) => {
             return [
                 {
                     image: action.payload.url,
-                    owner: { firstName: "Daniel" },
+                    owner: { firstName: action.payload.user },
                     liked: false,
                     likes: 0,
                     text: action.payload.title,
-                    tags: ["First post"]
+                    tags: [action.payload.tags]
                 }
                 , ...state]
 
