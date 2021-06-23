@@ -107,7 +107,7 @@ const PopUp = props => {
                             <input
                                 type='Text'
                                 name='user'
-                                // value={enteredTitle}
+                                autoComplete="off"
                                 onChange={(e)=>setInput(
                                     {...input, user: e.target.value
                                     })}
@@ -117,7 +117,7 @@ const PopUp = props => {
                             <input
                                 type='Text'
                                 name='title'
-                                // value={enteredTitle}
+                                autoComplete="off"
                                 onChange={(e)=>setInput(
                                     {...input, title: e.target.value
                                     })}
@@ -127,7 +127,7 @@ const PopUp = props => {
                             <input
                                 type='Text'
                                 name='hashtag'
-                                // value={enteredTitle}
+                                autoComplete="off"
                                 onChange={(e)=>setInput(
                                     {...input, tag: e.target.value
                                     })}
