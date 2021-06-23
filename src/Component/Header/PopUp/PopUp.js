@@ -17,8 +17,8 @@ const getBase64 = (file) => {
 const PopUp = props => {
 
     const { data, dispatch } = useContext(Context)
-    const [img, setImg] = useState([localStorage.getItem('image')]);
-    const [enteredTitle, setEnteredTitle] = useState('');
+    const [img, setImg] = useState();
+    const [input, setInput] = useState('');
 
     const imageUpload = (e) => {
         const file = e.target.files[0];
@@ -27,6 +27,7 @@ const PopUp = props => {
             localStorage['image'] = base64;
             console.debug("file stored", base64);
             console.log(file);
+            setImg([localStorage.getItem('image')])
         });
     };
 
@@ -34,43 +35,49 @@ const PopUp = props => {
         props.close();
     }
 
-    const onChange = (e) => {
-        e.preventDefault();
-        setEnteredTitle(e.target.value)
-        console.log(enteredTitle);
-    }
+    // const onChange = (e) => {
+    //     e.preventDefault();
+    //     setEnteredTitle(e.target.value)
+    //     console.log(enteredTitle);
+    // }
 
     const onSubmit = e => {
         e.preventDefault();
 
         //send enteredTitle
-        if (enteredTitle.trim().length === 0 || img.length === 0) {
+        if (input.title.trim().length === 0 || img.length === 0) {
             alert('You must enter a title for your foto!');
             return;
         } else {
-            console.log('YOU SUBMITED THIS: ', enteredTitle);
+            console.log('YOU SUBMITED THIS: ', input.title);
             closeBtn();
         }
 
         console.log(img)
         if (img) {
-            dispatch({ type: "ADD_POST", payload: { title: enteredTitle, url: img } })
+            dispatch({
+                type: "ADD_POST", payload: {
+                    title: input.title,
+                    url: [localStorage.getItem('image')],
+                   user: input.user ,
+                    tags: input.tag
+                }
+            })
 
         }
 
-        localStorage.setItem("data", JSON.stringify(data))
     }
 
     useEffect(() => {
 
-        if (localStorage.hasOwnProperty("data") && data.length !== 0) {
+        if (localStorage.hasOwnProperty("image") && data.length !== 0) {
 
             localStorage.setItem("data", JSON.stringify(data))
         }
 
-    }, [data])
+    }, [img])
 
-   
+
 
     return (
         <>
@@ -99,10 +106,32 @@ const PopUp = props => {
                         <form onSubmit={onSubmit}>
                             <input
                                 type='Text'
+                                name='user'
+                                // value={enteredTitle}
+                                onChange={(e)=>setInput(
+                                    {...input, user: e.target.value
+                                    })}
+                                placeholder='User'
+                                className={`border border-black rounded-md mt-4 w-full p-4`}>
+                            </input>
+                            <input
+                                type='Text'
                                 name='title'
-                                value={enteredTitle}
-                                onChange={onChange}
+                                // value={enteredTitle}
+                                onChange={(e)=>setInput(
+                                    {...input, title: e.target.value
+                                    })}
                                 placeholder='Title'
+                                className={`border border-black rounded-md mt-4 w-full p-4`}>
+                            </input>
+                            <input
+                                type='Text'
+                                name='hashtag'
+                                // value={enteredTitle}
+                                onChange={(e)=>setInput(
+                                    {...input, tag: e.target.value
+                                    })}
+                                placeholder='#hashtag'
                                 className={`border border-black rounded-md mt-4 w-full p-4`}>
                             </input>
                             <button type='submit' className='mt-4 bg-black w-full 
